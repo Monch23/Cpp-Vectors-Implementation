@@ -11,12 +11,16 @@ Vector::Vector() {
 }
 
 Vector::Vector(const Vector &other) {
-	if ((this->m_data) == (other.m_data)) {
+	if (this == &other) {
 		this->m_data = other.m_data;	
 	} else {
 		this->m_capacity = other.m_capacity;
 		this->m_size = other.m_size;
 		this->m_data = new int[other.m_capacity];
+
+		for (int i = 0; i < this->m_size; ++i) {
+			this->m_data[i] = other.m_data[i];
+		}
 	}
 }
 
@@ -45,16 +49,19 @@ void Vector::resize(size_t new_cap) {
 }
 
 void Vector::push_back(int value) {
+	if (m_capacity == 0) { return; }
+
 	if (m_size == m_capacity) {
 		m_capacity *= 2;
 		this->resize(m_capacity);
 	}
 	
 	m_data[m_size++] = value;
-	return;
 }
 
 void Vector::push_front(int value) {
+	if (m_capacity == 0) { return; }
+
 	if (m_size == m_capacity) {
 		m_capacity *= 2;
 		this->resize(m_capacity);
@@ -66,11 +73,10 @@ void Vector::push_front(int value) {
 
 	m_data[0] = value;
 	++m_size;
-	return;
 }
 
 int Vector::at(size_t pos) {
-	if (pos >= 0) {
+	if (pos >= m_size) {
 		std::cout << "Invalid index" << std::endl;
 		return -1;
 	}
@@ -91,6 +97,10 @@ bool Vector::is_empty(void) const {
 }
 
 int Vector::front(void) const {
+	if (this->is_empty() == true) {
+		std::cout << "Vector is empty" << std::endl;
+		return -1;
+	}
 	return m_data[0];
 }
 
